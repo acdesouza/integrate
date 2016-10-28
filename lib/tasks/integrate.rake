@@ -24,8 +24,8 @@ task integrate: [
   'integration:git:pull',
   'integration:bundle_install',
   'integration:test',
-  'integration:git:master_branch_check',
-  'integration:git:promote_master_to_staging',
+  'integration:git:development_branch_check',
+  'integration:git:promote_development_to_staging',
   'integration:git:push',
   'integration:lock',
   'integration:deploy',
@@ -40,7 +40,7 @@ task promote_staging_to_production: [
   'integration:git:status_check',
   'integration:clear_before_pull',
   'integration:git:pull',
-  'integration:git:master_branch_check',
+  'integration:git:development_branch_check',
   'integration:git:promote_staging_to_production',
   'integration:git:push',
   'integration:db:backup',
@@ -50,6 +50,10 @@ task promote_staging_to_production: [
 ]
 
 namespace :integration do
+  BRANCH_DEVELOPMENT = env['INTEGRATE_BRANCH_DEVELOPMENT'] || 'master'
+  BRANCH_STAGING = env['INTEGRATE_BRANCH_STAGING'] || 'staging'
+  BRANCH_PRODUCTION = env['INTEGRATE_BRANCH_PRODUCTION'] || 'production'
+
   task :set_production_as_deploy_env do
     ENV['APP_ENV'] ||= 'production'
   end
@@ -83,7 +87,7 @@ namespace :integration do
 
   task 'deploy' do
     puts "-----> Pushing #{APP_ENV} to #{APP}..."
-    sh_with_clean_env "git push git@heroku.com:#{APP}.git #{APP_ENV}:master"
+    sh_with_clean_env "git push git@heroku.com:#{APP}.git #{APP_ENV}:#{BRANCH_DEVELOPMENT}"
 
     puts "-----> Migrating..."
     sh_with_clean_env "heroku run rake db:migrate --app #{APP}"
@@ -121,7 +125,7 @@ namespace :integration do
       end
     end
 
-    task 'master_branch_check' do
+    task 'development_branch_check' do
       cmd = []
       cmd << "git branch --color=never" # list branches avoiding color
                                         #   control characters
@@ -131,10 +135,10 @@ namespace :integration do
       branch = `#{cmd.join('|')}`.chomp
 
       # Don't use == because git uses bash color escape sequences
-      unless branch == 'master'
+      unless branch == BRANCH_DEVELOPMENT
         puts "You are at branch <#{branch}>"
-        puts "Integration deploy runs only from <master> branch," +
-          " please merge <#{branch}> into <master> and" +
+        puts "Integration deploy runs only from <#{BRANCH_DEVELOPMENT}> branch," +
+          " please merge <#{branch}> into <#{BRANCH_DEVELOPMENT}> and" +
           " run integration proccess from there."
 
         exit
@@ -149,20 +153,20 @@ namespace :integration do
       sh 'git push'
     end
 
-    task :promote_master_to_staging do
-      sh "git checkout staging"
+    task :promote_development_to_staging do
+      sh "git checkout #{BRANCH_STAGING}"
       sh 'git pull --rebase'
-      sh "git rebase master"
-      sh 'git push origin staging'
-      sh "git checkout master"
+      sh "git rebase #{BRANCH_DEVELOPMENT}"
+      sh 'git push origin #{BRANCH_STAGING}'
+      sh "git checkout #{BRANCH_DEVELOPMENT}"
     end
 
     task :promote_staging_to_production do
-      sh "git checkout production"
+      sh "git checkout #{BRANCH_PRODUCTION}"
       sh 'git pull --rebase'
-      sh "git rebase staging"
-      sh 'git push origin production'
-      sh "git checkout master"
+      sh "git rebase #{BRANCH_STAGING}"
+      sh 'git push origin #{BRANCH_PRODUCTION}'
+      sh "git checkout #{BRANCH_DEVELOPMENT}"
     end
   end
 end
