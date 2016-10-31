@@ -50,9 +50,9 @@ task promote_staging_to_production: [
 ]
 
 namespace :integration do
-  BRANCH_DEVELOPMENT = env['INTEGRATE_BRANCH_DEVELOPMENT'] || 'master'
-  BRANCH_STAGING = env['INTEGRATE_BRANCH_STAGING'] || 'staging'
-  BRANCH_PRODUCTION = env['INTEGRATE_BRANCH_PRODUCTION'] || 'production'
+  BRANCH_DEVELOPMENT = ENV['INTEGRATE_BRANCH_DEVELOPMENT'] || 'master'
+  BRANCH_STAGING = ENV['INTEGRATE_BRANCH_STAGING'] || 'staging'
+  BRANCH_PRODUCTION = ENV['INTEGRATE_BRANCH_PRODUCTION'] || 'production'
 
   task :set_production_as_deploy_env do
     ENV['APP_ENV'] ||= 'production'
