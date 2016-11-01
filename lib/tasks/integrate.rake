@@ -50,9 +50,6 @@ task promote_staging_to_production: [
 ]
 
 namespace :integration do
-  BRANCH_DEVELOPMENT = ENV['INTEGRATE_BRANCH_DEVELOPMENT'] || 'master'
-  BRANCH_STAGING = ENV['INTEGRATE_BRANCH_STAGING'] || 'staging'
-  BRANCH_PRODUCTION = ENV['INTEGRATE_BRANCH_PRODUCTION'] || 'production'
 
   task :set_production_as_deploy_env do
     ENV['APP_ENV'] ||= 'production'
@@ -70,6 +67,10 @@ namespace :integration do
     USER    = `whoami`.chomp
     APP_ENV = ENV['APP_ENV'] || 'staging'
     APP     = "#{PROJECT}-#{APP_ENV}"
+
+    BRANCH_DEVELOPMENT = ENV['INTEGRATE_BRANCH_DEVELOPMENT'] || 'master'
+    BRANCH_STAGING = ENV['INTEGRATE_BRANCH_STAGING'] || 'staging'
+    BRANCH_PRODUCTION = ENV['INTEGRATE_BRANCH_PRODUCTION'] || 'production'
   end
 
   task test: 'integration:test:prepare' do
