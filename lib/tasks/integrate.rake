@@ -156,17 +156,17 @@ namespace :integration do
 
     task :promote_development_to_staging do
       sh "git checkout #{BRANCH_STAGING}"
-      sh 'git pull --rebase'
+      sh "git pull --rebase"
       sh "git rebase #{BRANCH_DEVELOPMENT}"
-      sh 'git push origin #{BRANCH_STAGING}'
+      sh "git push origin #{BRANCH_STAGING}"
       sh "git checkout #{BRANCH_DEVELOPMENT}"
     end
 
     task :promote_staging_to_production do
       sh "git checkout #{BRANCH_PRODUCTION}"
-      sh 'git pull --rebase'
+      sh "git pull --rebase"
       sh "git rebase #{BRANCH_STAGING}"
-      sh 'git push origin #{BRANCH_PRODUCTION}'
+      sh "git push origin #{BRANCH_PRODUCTION}"
       sh "git checkout #{BRANCH_DEVELOPMENT}"
     end
   end
