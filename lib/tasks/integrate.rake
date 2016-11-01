@@ -88,7 +88,7 @@ namespace :integration do
 
   task 'deploy' do
     puts "-----> Pushing #{APP_ENV} to #{APP}..."
-    sh_with_clean_env "git push git@heroku.com:#{APP}.git #{APP_ENV}:#{BRANCH_DEVELOPMENT}"
+    sh_with_clean_env "git push git@heroku.com:#{APP}.git #{APP_ENV}:master"
 
     puts "-----> Migrating..."
     sh_with_clean_env "heroku run rake db:migrate --app #{APP}"
