@@ -26,6 +26,7 @@ task integrate: [
   'integration:test',
   'integration:git:development_branch_check',
   'integration:git:promote_development_to_staging',
+  'integration:staging_is_branch_to_up'
   'integration:git:push',
   'integration:lock',
   'integration:deploy',
@@ -42,6 +43,7 @@ task promote_staging_to_production: [
   'integration:git:pull',
   'integration:git:development_branch_check',
   'integration:git:promote_staging_to_production',
+  'integration:production_is_branch_to_up'
   'integration:git:push',
   'integration:db:backup',
   'integration:lock',
@@ -86,9 +88,17 @@ namespace :integration do
     sh_with_clean_env "heroku config:remove INTEGRATING_BY --app #{APP}"
   end
 
+  tast 'staging_is_branch_to_up' do
+     BRANCH_TO_UP = BRANCH_STAGING
+  end
+
+  tast 'production_is_branch_to_up' do
+     BRANCH_TO_UP = BRANCH_PRODUCTION
+  end
+
   task 'deploy' do
     puts "-----> Pushing #{APP_ENV} to #{APP}..."
-    sh_with_clean_env "git push git@heroku.com:#{APP}.git #{APP_ENV}:master"
+    sh_with_clean_env "git push git@heroku.com:#{APP}.git #{BRANCH_TO_UP}:master"
 
     puts "-----> Migrating..."
     sh_with_clean_env "heroku run rake db:migrate --app #{APP}"
