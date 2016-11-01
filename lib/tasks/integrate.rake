@@ -26,7 +26,7 @@ task integrate: [
   'integration:test',
   'integration:git:development_branch_check',
   'integration:git:promote_development_to_staging',
-  'integration:staging_is_branch_to_up'
+  'integration:staging_is_branch_to_up',
   'integration:git:push',
   'integration:lock',
   'integration:deploy',
@@ -43,7 +43,7 @@ task promote_staging_to_production: [
   'integration:git:pull',
   'integration:git:development_branch_check',
   'integration:git:promote_staging_to_production',
-  'integration:production_is_branch_to_up'
+  'integration:production_is_branch_to_up',
   'integration:git:push',
   'integration:db:backup',
   'integration:lock',
