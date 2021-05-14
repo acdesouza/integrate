@@ -4,7 +4,7 @@ Este projeto implementa a visão que a nossa equipe acredita ser a melhor forma 
 
 Cada ambiente está ligado diretamente a um branch. No nosso caso, temos 3(três) branchs principais:
 
- * master: é onde fazemos o desenvolvimento das histórias. Não pode ter impedimentos por conta de subidas semanais que fazemos. 
+ * master: é onde fazemos o desenvolvimento das histórias. Não pode ter impedimentos por conta de subidas semanais que fazemos.
  * staging: é o ambiente de testes interno. Sempre que compartilhamos o código, fazemos deploy para esse ambiente.
  * production: é o ambiente usado pelos clientes. Ele é construido a partir do ambiente staging.
 
@@ -52,6 +52,7 @@ Cada ambiente está ligado diretamente a um branch. No nosso caso, temos 3(três
 ```rake
 task :force_different_name_for_heroku_project do
   ENV['PROJECT'] = 'pre-nutrebem'
+  ENV['DEPLOY_GIT_URL'] = 'https://git.heroku.com/'
 end
 
 Rails.application.load_tasks # Se for um projeto Rails
